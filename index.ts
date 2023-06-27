@@ -1,4 +1,3 @@
-// This is our main function
 import * as readline from 'readline';
 
 const rl = readline.createInterface({
@@ -6,19 +5,8 @@ const rl = readline.createInterface({
     output: process.stdout
 })
 
-function reverse4(text: string): string {
-    let newText: string = "";
-
-    while (text != "") {
-        newText += text.substring(text.length - 4);
-        text = text.substring(0, text.length - 4);
-    }
-
-    return newText;
-}
-
 function newFunc(text: string, num: number, numToCheck: number): string {
-    if (numToCheck % num == 0){
+    if (numToCheck % num === 0){
         return text;
     }
     return "";
@@ -26,40 +14,40 @@ function newFunc(text: string, num: number, numToCheck: number): string {
 
 function fizzbuzz(numInput: number, rules: Record<string, boolean>, userDefined: Record<string, number>): void {
     for(let i: number = 1; i <= numInput; i++) {
-        let text: string = "";
-        let flag: boolean = false;
+        let result: string[] = [];
+        let reverseFlag: boolean = false;
 
-        if (i % 3 == 0 && rules["-Fizz"]) {
-            text += "Fizz";
+        if (i % 3 === 0 && rules["-Fizz"]) {
+            result.push("Fizz");
         }
-        if (i % 13 == 0 && rules["-Fezz"]) {
-            text += "Fezz";
-            flag = true;
+        if (i % 13 === 0 && rules["-Fezz"]) {
+            result.push("Fezz");
+            reverseFlag = true;
         }
-        if (i % 5 == 0 && rules["-Buzz"]) {
-            text += "Buzz";
+        if (i % 5 === 0 && rules["-Buzz"]) {
+            result.push("Buzz");
         }
-        if (i % 7 == 0 && rules["-Bang"]) {
-            text += "Bang";
+        if (i % 7 === 0 && rules["-Bang"]) {
+            result.push("Bang");
         }
-        if (i % 11 == 0 && rules["-Bong"]) {
-            if (flag) {
-                text = "FezzBong";
+        if (i % 11 === 0 && rules["-Bong"]) {
+            if (reverseFlag) {
+                result.push("FezzBong");
             } else {
-                text = "Bong";
+                result.push("Bong");
             }
         }
 
-        Object.entries(userDefined).forEach(([key, values]) => text += -newFunc(key, values, i));
+        Object.entries(userDefined).forEach(([key, values]) => result.push(newFunc(key, values, i)));
 
-        if (i % 17 == 0 && rules["-rev"]) {
-           text = reverse4(text);
+        if (i % 17 === 0 && rules["-rev"]) {
+           result = result.reverse();
         }
 
-        if (text == "") {
+        if (result.join("").length === 0) {
             console.log(i);
         } else {
-            console.log(text);
+            console.log(result.join(""));
         }
     }
 }
@@ -73,11 +61,10 @@ function main(): void {
     }
     rl.question("Give me some rules and a max\n-Fizz\n-Buzz\n-Bang\n-Bong\n-rev\n-new(num,text)\nexample: -Fizz -Buzz -new(2,Fuzz) 100\n", (answer) => {
 
-        let rulesToSet: string[] = answer.split(" ");
-        let maxNum: number = parseInt(rulesToSet[rulesToSet.length - 1])
-        let ud: Record<string, number> = {};
-        let num: number = 0;
-        let text: string = "";
+        const rulesToSet: string[] = answer.split(" ");
+        const maxNum: number = parseInt(rulesToSet[rulesToSet.length - 1])
+        const userDefinedRules: Record<string, number> = {};
+
         rulesToSet.splice(rulesToSet.length - 1, 1);
 
         for (let entry of rulesToSet) {
@@ -87,14 +74,15 @@ function main(): void {
                 const match = entry.match(regex);
 
                 if (match) {
-                   num = parseInt(match[1]);
-                   text = match[2];
+                    const newRuleNumber = parseInt(match[1]);
+                    const newRuleText = match[2];
+                    userDefinedRules[newRuleText] = newRuleNumber;
                 }
-                ud[text] = num;
+
             }
         }
 
-        fizzbuzz(maxNum, rules, ud);
+        fizzbuzz(maxNum, rules, userDefinedRules);
 
         rl.close();
     })
