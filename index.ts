@@ -1,4 +1,10 @@
 // This is our main function
+import * as readline from 'readline';
+
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+})
 
 function reverse4(text: string): string {
     let newText: string = "";
@@ -11,16 +17,18 @@ function reverse4(text: string): string {
     return newText;
 }
 
-function fizzbuzz(): void {
+function fizzbuzz(numInput: number): void {
 
-    for(let i: number = 1; i <= 1000; i++) {
+    for(let i: number = 1; i <= numInput; i++) {
         let text: string = "";
+        let flag: boolean = false;
 
         if (i % 3 == 0) {
             text += "Fizz";
         }
         if (i % 13 == 0) {
             text += "Fezz";
+            flag = true;
         }
         if (i % 5 == 0) {
             text += "Buzz";
@@ -29,7 +37,11 @@ function fizzbuzz(): void {
             text += "Bang";
         }
         if (i % 11 == 0) {
-            text += "Bong";
+            if (flag) {
+                text = "FezzBong";
+            } else {
+                text = "Bong";
+            }
         }
         if (i % 17 == 0) {
            text = reverse4(text);
@@ -43,5 +55,7 @@ function fizzbuzz(): void {
     }
 }
 
-// Now, we run the main function:
-fizzbuzz();
+rl.question("Give me maximum number: ", (answer) => {
+    fizzbuzz(parseInt(answer));
+    rl.close();
+})
